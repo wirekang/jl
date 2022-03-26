@@ -1,4 +1,4 @@
-module github.com/mightyguava/jl
+module github.com/wirekang/jl
 
 go 1.12
 
