@@ -35,27 +35,34 @@ type FieldFmt struct {
 
 // DefaultCompactPrinterFieldFmt is a format for the CompactPrinter that tries to present logs in an easily skimmable manner
 // for most types of logs.
-var DefaultCompactPrinterFieldFmt = []FieldFmt{{
-	Name:         "level",
-	Finders: []FieldFinder{ByNames("level", "severity")},
-	Transformers: []Transformer{Truncate(4), UpperCase, ColorMap(LevelColors)},
-}, {
-	Name:    "time",
-	Finders: []FieldFinder{ByNames("timestamp", "time")},
-}, {
-	Name:         "thread",
-	Transformers: []Transformer{Ellipsize(16), Format("[%s]"), RightPad(18), ColorSequence(AllColors)},
-}, {
-	Name:         "logger",
-	Transformers: []Transformer{Ellipsize(20), Format("%s|"), LeftPad(21), ColorSequence(AllColors)},
-}, {
-	Name:    "message",
-	Finders: []FieldFinder{ByNames("message", "msg", "textPayload", "jsonPayload.message")},
-}, {
-	Name:     "errors",
-	Finders:  []FieldFinder{LogrusErrorFinder, ByNames("exceptions", "exception", "error")},
-	Stringer: ErrorStringer,
-}}
+var DefaultCompactPrinterFieldFmt = []FieldFmt{
+	{
+		Name:         "level",
+		Finders:      []FieldFinder{ByNames("level", "severity")},
+		Transformers: []Transformer{Truncate(4), UpperCase, ColorMap(LevelColors)},
+	}, {
+		Name:    "time",
+		Finders: []FieldFinder{ByNames("timestamp", "time")},
+	}, {
+		Name:         "thread",
+		Transformers: []Transformer{Ellipsize(16), Format("[%s]"), RightPad(18), ColorSequence(AllColors)},
+	}, {
+		Name:         "logger",
+		Finders:      []FieldFinder{ByNames("who")},
+		Transformers: []Transformer{Ellipsize(20), Format("%s|"), LeftPad(11), ColorSequence(AllColors)},
+	}, {
+		Name:    "message",
+		Finders: []FieldFinder{ByNames("message", "msg", "textPayload", "jsonPayload.message")},
+	}, {
+		Name:     "errors",
+		Finders:  []FieldFinder{LogrusErrorFinder, ByNames("exceptions", "exception", "error")},
+		Stringer: ErrorStringer,
+	},
+	{
+		Name:    "stack",
+		Finders: []FieldFinder{ByNames("stackTrace")},
+	},
+}
 
 // NewCompactPrinter allocates and returns a new compact printer.
 func NewCompactPrinter(w io.Writer) *CompactPrinter {
